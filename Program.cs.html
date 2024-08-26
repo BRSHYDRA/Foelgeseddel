@@ -1,0 +1,63 @@
+<html>
+<head>
+<title>Program.cs</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #6c95eb;}
+.s1 { color: #d0d0d0;}
+.s2 { color: #bdbdbd;}
+.s3 { color: #85c46c; font-style: italic;}
+.s4 { color: #c9a26d;}
+</style>
+</head>
+<body bgcolor="#262626">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+Program.cs</font>
+</center></td></tr></table>
+<pre><span class="s0">using </span><span class="s1">System</span><span class="s2">;</span>
+<span class="s0">using </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">API</span><span class="s2">.</span><span class="s1">Service</span><span class="s2">;</span>
+<span class="s0">using </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">ClientTools</span><span class="s2">.</span><span class="s1">DataModel</span><span class="s2">;</span>
+<span class="s0">using </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">Common</span><span class="s2">;</span>
+<span class="s0">using </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">DataModel</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">AutoPrintDeliveryNote</span>
+<span class="s2">{</span>
+    <span class="s0">public </span><span class="s1">async </span><span class="s0">void </span><span class="s1">CheckAndPrintDeliveryNote</span><span class="s2">(</span><span class="s1">CrudAPI api</span><span class="s2">, </span><span class="s1">DebtorOrderClient order</span><span class="s2">)</span>
+    <span class="s2">{</span>
+        <span class="s3">// Check if all lines are delivered</span>
+        <span class="s0">bool </span><span class="s1">allLinesDelivered </span><span class="s2">= </span><span class="s0">true</span><span class="s2">;</span>
+        <span class="s0">foreach </span><span class="s2">(</span><span class="s1">var line </span><span class="s0">in </span><span class="s1">order</span><span class="s2">.</span><span class="s1">Lines</span><span class="s2">)</span>
+        <span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">line</span><span class="s2">.</span><span class="s1">Qty </span><span class="s2">!= </span><span class="s1">line</span><span class="s2">.</span><span class="s1">Delivered</span><span class="s2">)</span>
+            <span class="s2">{</span>
+                <span class="s1">allLinesDelivered </span><span class="s2">= </span><span class="s0">false</span><span class="s2">;</span>
+                <span class="s0">break</span><span class="s2">;</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">allLinesDelivered</span><span class="s2">)</span>
+        <span class="s2">{</span>
+            <span class="s3">// Print delivery note</span>
+            <span class="s1">await PrintDeliveryNoteAsync</span><span class="s2">(</span><span class="s1">api</span><span class="s2">, </span><span class="s1">order</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private </span><span class="s1">async Task PrintDeliveryNoteAsync</span><span class="s2">(</span><span class="s1">CrudAPI api</span><span class="s2">, </span><span class="s1">DebtorOrderClient order</span><span class="s2">)</span>
+    <span class="s2">{</span>
+        <span class="s3">// Create a delivery note report</span>
+        <span class="s1">var report </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">ClientTools</span><span class="s2">.</span><span class="s1">Controls</span><span class="s2">.</span><span class="s1">ReportAPI</span><span class="s2">(</span><span class="s1">api</span><span class="s2">);</span>
+        <span class="s1">var deliveryNote </span><span class="s2">= </span><span class="s1">await report</span><span class="s2">.</span><span class="s1">GenerateReport</span><span class="s2">(</span><span class="s4">&quot;DeliveryNote&quot;</span><span class="s2">, </span><span class="s1">order</span><span class="s2">);</span>
+
+        <span class="s3">// Print the report</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">deliveryNote </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">)</span>
+        <span class="s2">{</span>
+            <span class="s1">var printer </span><span class="s2">= </span><span class="s0">new </span><span class="s1">Uniconta</span><span class="s2">.</span><span class="s1">ClientTools</span><span class="s2">.</span><span class="s1">Controls</span><span class="s2">.</span><span class="s1">Printer</span><span class="s2">();</span>
+            <span class="s1">printer</span><span class="s2">.</span><span class="s1">Print</span><span class="s2">(</span><span class="s1">deliveryNote</span><span class="s2">);</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span>
+</pre>
+</body>
+</html>
